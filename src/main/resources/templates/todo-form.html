@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Thêm công việc</title>
+</head>
+<body>
+
+<h2>Thêm công việc</h2>
+
+<form th:action="@{/add}" th:object="${todoDTO}" method="post">
+
+  Nội dung:
+  <input type="text" th:field="*{content}">
+  <span th:errors="*{content}" style="color:red"></span>
+  <br><br>
+
+  Ngày hết hạn:
+  <input type="date" th:field="*{dueDate}">
+  <span th:errors="*{dueDate}" style="color:red"></span>
+  <br><br>
+
+  <button type="submit">Thêm</button>
+</form>
+
+<br>
+<a th:href="@{/}"Quay lại danh sách</a>
+
+</body>
+</html>
