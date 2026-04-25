@@ -20,21 +20,21 @@ public class TodoController {
     @Autowired
     private TodoService service;
 
-    // 👉 Trang danh sách
+    // Trang danh sách
     @GetMapping("/")
     public String list(Model model) {
         model.addAttribute("todos", service.findAll());
         return "todo-list";
     }
 
-    // 👉 Form thêm
+    // Form thêm
     @GetMapping("/add")
     public String showForm(Model model) {
         model.addAttribute("todoDTO", new TodoDTO());
         return "todo-form";
     }
 
-    // 👉 Xử lý thêm
+    //  Xử lý thêm
     @PostMapping("/add")
     public String add(@Valid @ModelAttribute("todoDTO") TodoDTO dto,
                       BindingResult result) {
