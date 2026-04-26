@@ -7,6 +7,7 @@ import re.cntt4.todo.repository.TodoRepository;
 import re.cntt4.todo.service.TodoService;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class TodoServiceImpl implements TodoService {
@@ -22,5 +23,14 @@ public class TodoServiceImpl implements TodoService {
     @Override
     public void save(Todo todo) {
         repo.save(todo);
+    }
+    @Override
+    public Optional<Todo> findById(Long id) {
+        return repo.findById(id);
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        repo.deleteById(id);
     }
 }

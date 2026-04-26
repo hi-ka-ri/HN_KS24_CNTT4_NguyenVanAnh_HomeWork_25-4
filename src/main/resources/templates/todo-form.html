@@ -2,29 +2,48 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>Thêm công việc</title>
+  <title>Form</title>
 </head>
 <body>
 
-<h2>Thêm công việc</h2>
+<h2 th:text="${todoDTO.id != null ? 'Cập nhật' : 'Thêm mới'}"></h2>
 
-<form th:action="@{/add}" th:object="${todoDTO}" method="post">
+<form th:action="${todoDTO.id != null} ? @{/update} : @{/add}"
+      th:object="${todoDTO}"
+      method="post">
 
-  Nội dung:
-  <input type="text" th:field="*{content}">
-  <span th:errors="*{content}" style="color:red"></span>
-  <br><br>
+  <input type="hidden" th:field="*{id}">
 
-  Ngày hết hạn:
-  <input type="date" th:field="*{dueDate}">
-  <span th:errors="*{dueDate}" style="color:red"></span>
-  <br><br>
+  <p>
+    Nội dung:
+    <input type="text" th:field="*{content}">
+    <span th:errors="*{content}" style="color:red"></span>
+  </p>
 
-  <button type="submit">Thêm</button>
+  <p>
+    Ngày:
+    <input type="date" th:field="*{dueDate}">
+    <span th:errors="*{dueDate}" style="color:red"></span>
+  </p>
+
+  <p>
+    Mức độ:
+    <select th:field="*{priority}">
+      <option value="">--Chọn--</option>
+      <option th:each="p : ${priorities}"
+              th:value="${p}"
+              th:text="${p}">
+      </option>
+    </select>
+  </p>
+
+  <button type="submit">
+    <span th:text="${todoDTO.id != null ? 'Cập nhật' : 'Thêm'}"></span>
+  </button>
+
 </form>
 
-<br>
-<a th:href="@{/}"Quay lại danh sách</a>
+<a th:href="@{/}">Quay lại</a>
 
 </body>
 </html>
