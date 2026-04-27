@@ -2,24 +2,33 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Danh sách</title>
+    <title th:text="#{todo.title}">Todo List</title>
 </head>
 <body>
 
-<h2>Danh sách công việc</h2>
+<!-- đổi ngôn ngữ -->
+<p>
+    <a th:href="@{/(lang='vi')}">VI</a> |
+    <a th:href="@{/(lang='en')}">EN</a> |
+    <a th:href="@{/(lang='ja')}">JP</a>
+</p>
+
+<h2 th:text="#{todo.title}"></h2>
+
+<h3 th:text="#{todo.owner} + ' ' + ${ownerName}"></h3>
 
 <p th:if="${message}" th:text="${message}" style="color:green"></p>
 
-<a th:href="@{/add}">Thêm mới</a>
+<a th:href="@{/add}" th:text="#{todo.add}"></a>
 
 <table border="1">
     <tr>
         <th>ID</th>
-        <th>Nội dung</th>
-        <th>Ngày</th>
-        <th>Status</th>
-        <th>Priority</th>
-        <th>Hành động</th>
+        <th th:text="#{todo.content}"></th>
+        <th th:text="#{todo.date}"></th>
+        <th th:text="#{todo.status}"></th>
+        <th th:text="#{todo.priority}"></th>
+        <th th:text="#{todo.action}"></th>
     </tr>
 
     <tr th:each="t : ${todos}">
@@ -29,12 +38,14 @@
         <td th:text="${t.status}"></td>
         <td th:text="${t.priority}"></td>
         <td>
-            <a th:href="@{/edit/{id}(id=${t.id})}">Sửa</a>
+            <a th:href="@{/edit/{id}(id=${t.id})}" th:text="#{todo.edit}"></a>
+            |
             <a th:href="@{/delete/{id}(id=${t.id})}"
-               onclick="return confirm('Bạn chắc chắn muốn xóa?')">Xóa</a>
+               th:text="#{todo.delete}"
+               onclick="return confirm('Are you sure?')">
+            </a>
         </td>
     </tr>
-
 </table>
 
 </body>

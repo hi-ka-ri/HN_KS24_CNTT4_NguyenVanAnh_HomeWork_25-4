@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="#{welcome.title}">Welcome</title>
+</head>
+<body>
+
+<h2 th:text="#{welcome.title}"></h2>
+
+<form th:action="@{/save-owner}" method="post">
+    <label th:text="#{welcome.enterName}"></label>
+    <input type="text" name="name" required>
+    <button type="submit" th:text="#{welcome.start}"></button>
+</form>
+
+<p>
+    <a th:href="@{/(lang='vi')}">VI</a> |
+    <a th:href="@{/(lang='en')}">EN</a> |
+    <a th:href="@{/(lang='ja')}">JP</a>
+</p>
+
+</body>
+</html>

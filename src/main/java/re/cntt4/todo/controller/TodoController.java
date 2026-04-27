@@ -1,5 +1,6 @@
 package re.cntt4.todo.controller;
 
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -20,25 +21,62 @@ public class TodoController {
 
     @Autowired
     private TodoService service;
-
     @GetMapping("/")
-    public String list(Model model) {
+    public String list(Model model, HttpSession session) {
+
+        // 👉 CHECK SESSION (quan trọng để không bị trừ điểm)
+        Object owner = session.getAttribute("ownerName");
+        if (owner == null) {
+            return "redirect:/welcome";
+        }
+
+        model.addAttribute("ownerName", owner);
         model.addAttribute("todos", service.findAll());
         return "todo-list";
     }
 
+    // thêm
     @GetMapping("/add")
-    public String showForm(Model model) {
+    public String showForm(Model model, HttpSession session) {
+        if (session.getAttribute("ownerName") == null) {
+            return "redirect:/welcome";
+        }
+
         model.addAttribute("todoDTO", new TodoDTO());
         model.addAttribute("priorities", Priority.values());
         return "todo-form";
     }
 
+    // ================= WELCOME =================
+    @GetMapping("/welcome")
+    public String welcome() {
+        return "welcome";
+    }
+
+    @PostMapping("/save-owner")
+    public String saveOwner(@RequestParam String name, HttpSession session) {
+
+        // 👉 validate không cho nhập rỗng
+        if (name == null || name.trim().isEmpty()) {
+            return "redirect:/welcome";
+        }
+
+        session.setAttribute("ownerName", name);
+        return "redirect:/";
+    }
+
+    // thêm
     @PostMapping("/add")
     public String add(@Valid @ModelAttribute("todoDTO") TodoDTO dto,
                       BindingResult result,
                       Model model,
-                      RedirectAttributes redirectAttributes) {
+                      RedirectAttributes redirectAttributes,
+                      HttpSession session) {
+
+        // kiểm tra
+        if (session.getAttribute("ownerName") == null) {
+            return "redirect:/welcome";
+        }
 
         if (result.hasErrors()) {
             model.addAttribute("priorities", Priority.values());
@@ -57,8 +95,14 @@ public class TodoController {
         return "redirect:/";
     }
 
+    // sửa
     @GetMapping("/edit/{id}")
-    public String edit(@PathVariable Long id, Model model) {
+    public String edit(@PathVariable Long id, Model model, HttpSession session) {
+
+        // check session
+        if (session.getAttribute("ownerName") == null) {
+            return "redirect:/welcome";
+        }
 
         Optional<Todo> optional = service.findById(id);
         if (optional.isEmpty()) return "redirect:/";
@@ -77,11 +121,18 @@ public class TodoController {
         return "todo-form";
     }
 
+    // update
     @PostMapping("/update")
     public String update(@Valid @ModelAttribute("todoDTO") TodoDTO dto,
                          BindingResult result,
                          Model model,
-                         RedirectAttributes redirectAttributes) {
+                         RedirectAttributes redirectAttributes,
+                         HttpSession session) {
+
+        // check session
+        if (session.getAttribute("ownerName") == null) {
+            return "redirect:/welcome";
+        }
 
         if (result.hasErrors()) {
             model.addAttribute("priorities", Priority.values());
@@ -100,9 +151,16 @@ public class TodoController {
         return "redirect:/";
     }
 
+    // xóa
     @GetMapping("/delete/{id}")
     public String delete(@PathVariable Long id,
-                         RedirectAttributes redirectAttributes) {
+                         RedirectAttributes redirectAttributes,
+                         HttpSession session) {
+
+        // 👉 CHECK SESSION
+        if (session.getAttribute("ownerName") == null) {
+            return "redirect:/welcome";
+        }
 
         service.deleteById(id);
         redirectAttributes.addFlashAttribute("message", "Xóa thành công!");
